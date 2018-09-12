@@ -1,0 +1,39 @@
+#!usr/bin/perl -w
+use strict;
+
+#Programa para filtrar o arquivo de saida do IgBLAST
+
+#abre o arquivo da linha de comando
+my $file = $ARGV[0];#arquivo blast fmt7
+open (FILE, "<$file") or die ("\nARQUIVO NÃO ENCONTRADO!\n");
+my @linhas = <FILE>;#salva as linhas num @rray
+close FILE;
+
+my ($i, $query, $junction, $gene, $CDR3, $length);
+my (@size);
+for ($i=0; $i<=$#linhas; $i++){#percorre as linhas
+	if ($linhas[$i] =~ /^# Query/){
+		$query = $linhas[$i];
+		chomp $query;
+		print "$query\t";
+	}
+	if ($linhas[$i] =~ /rearrangement/){
+		$gene = $linhas[$i+1];
+		chomp $gene;
+		print "$gene\t";
+	}
+	if ($linhas[$i] =~ /junction/){
+		$junction = $linhas[$i+1];
+		chomp $junction;
+		print "$junction\t";
+	}
+	if ($linhas[$i] =~ /^# Sub-region/){
+		$CDR3 = $linhas[$i+1];
+		chomp $CDR3;
+		print "$CDR3\t";
+	}
+	if ($linhas[$i] =~ /hits found/){
+		$length = $linhas[$i+1];
+		print $length;
+	}
+}
